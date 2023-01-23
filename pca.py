@@ -43,19 +43,28 @@ plt.ylabel('Second Principal Component')
 plt.show()
 
 
-import numpy as np
+# with lines
+import matplotlib.pyplot as plt
 
-# Create a biplot
-def biplot(pca, X):
-    plt.scatter(X_pca[:, 0], X_pca[:, 1])
-    plt.xlabel('First Principal Component')
-    plt.ylabel('Second Principal Component')
-    for feature, vector in zip(X.columns, pca.components_):
-        plt.arrow(0, 0, vector[0], vector[1], color='r', width=0.01)
-        plt.text(vector[0]*1.2, vector[1]*1.2, feature)
-    plt.show()
+# Fit PCA to the data
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
 
-biplot(pca, X)
+# Create a scatter plot of the first two principal components
+plt.scatter(X_pca[:, 0], X_pca[:, 1])
+plt.xlabel('First Principal Component')
+plt.ylabel('Second Principal Component')
+
+# Get the eigenvectors from PCA model
+eigenvectors = pca.components_
+
+# Scale the eigenvectors to make them more visible
+eigenvectors = eigenvectors * np.sqrt(pca.explained_variance_)
+
+# Plot the lines of direction of the original features
+plt.quiver(np.mean(X_pca[:, 0]), np.mean(X_pca[:, 1]), eigenvectors[0, 0], eigenvectors[0, 1], color='r', scale=np.max(eigenvectors))
+plt.quiver(np.mean(X_pca[:, 0]), np.mean(X_pca[:, 1]), eigenvectors[1, 0], eigenvectors[1, 1], color='r', scale=np.max(eigenvectors))
+plt.show()
 
 #3D vizualization
 
