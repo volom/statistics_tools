@@ -103,5 +103,9 @@ ax.set_zlabel('Third Principal Component')
 eigenvectors = pca.components_
 
 # Scale the eigenvectors to make them more visible
-eigenvectors = eigenvectors * np.sq
+eigenvectors = eigenvectors * np.sqrt(pca.explained_variance_)
+ax.quiver(np.mean(X_pca[:, 0]), np.mean(X_pca[:, 1]), np.mean(X_pca[:, 2]), eigenvectors[0, 0], eigenvectors[0, 1], eigenvectors[0, 2], color='r', length=np.max(eigenvectors))
+ax.quiver(np.mean(X_pca[:, 0]), np.mean(X_pca[:, 1]), np.mean(X_pca[:, 2]), eigenvectors[1, 0], eigenvectors[1, 1], eigenvectors[1, 2], color='r', length=np.max(eigenvectors))
+ax.quiver(np.mean(X_pca[:, 0]), np.mean(X_pca[:, 1]), np.mean(X_pca[:, 2]), eigenvectors[2, 0], eigenvectors[2, 1], eigenvectors[2, 2], color='r', length=np.max(eigenvectors))
+plt.show()
 
