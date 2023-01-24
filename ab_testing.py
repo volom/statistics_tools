@@ -101,14 +101,14 @@ def bayesian_ab_test(A_conversions, A_visitors, B_conversions, B_visitors, signi
     # check if the probability is greater than the significance level
     if one_tail:
         if prob > significance_level:
-            print(f'A version is better with a probability of {prob:.2f}')
+            print(f'A version is better with a probability of {prob*100:.2f}%')
         else:
-            print(f'B version is better with a probability of {1-prob:.2f}')
+            print(f'B version is better with a probability of {(1-prob)*100:.2f}%')
     else:
         if prob > significance_level/2:
-            print(f'A version is better with a probability of {prob:.2f}')
+            print(f'A version is better with a probability of {prob*100:.2f}%')
         else:
-            print(f'B version is better with a probability of {1-prob:.2f}')
+            print(f'B version is better with a probability of {(1-prob)*100:.2f}%')
     # plot the results
     plt.hist(trace['A_cr'], bins=30, density=True, label='A')
     plt.hist(trace['B_cr'], bins=30, density=True, label='B', alpha=0.5)
@@ -131,9 +131,34 @@ The binomial distribution, which is used in the example is commonly used for bin
 such as the number of conversions in an A/B test. However, if you have continuous data, you might use
 a normal distribution or a student t-distribution in the likelihood function.
 """
-with pm.Model() as model:
-    A_time = pm.Normal('A_time', mu=10, sd=1)
-    B_time = pm.Normal('B_time', mu=10, sd=1)
-    A_like = pm.Normal('A_like', mu=A_time, sd=1, observed=A_data)
-    B_like = pm.Normal('B_like', mu=B_time, sd=1, observed=B_data)
+# with pm.Model() as model:
+#     A_time = pm.Normal('A_time', mu=10, sd=1)
+#     B_time = pm.Normal('B_time', mu=10, sd=1)
+#     A_like = pm.Normal('A_like', mu=A_time, sd=1, observed=A_data)
+#     B_like = pm.Normal('B_like', mu=B_time, sd=1, observed=B_data)
 
+# Frequentist approach
+import scipy.stats as stats
+
+def frequentist_ab_test(A_conversions, A_visitors, B_conversions, B_visitors, significance_level, one_tail=False):
+    A_cr = A_conversions / A_visitors
+    B_cr = B_conversions / B_visitors
+    diff = A_cr - B_cr
+    pooled_cr = (A_conversions + B_conversions) / (A_visitors + B_visitors)
+    se = pooled_cr * (1 - pooled_cr) * (1 / A_visitors + 1 / B_visitors)
+    if one_tail:
+        z_score = (diff - 0) / se
+        p_value = stats.norm.cdf(z_score)
+        if p_value < significance_level:
+            print(f'A version is better with a p-value of {p_value:.4f}')
+        else:
+            print(f'A version is not better with a p-value of {p_value:.4f}')
+    else:
+        z_score = (diff - 0) / se
+        p_value = stats.norm.cdf(z_score)
+        if p_value < significance_level / 2:
+            print(f'A version is better with a p-value of {p_value:.4f}')
+        elif p_value > 1 - significance_level / 2:
+            print(f'B version is better with a p-value of {p_value:.4f}')
+        else:
+            print(f'There is not enough evidence to say that either version is better with a p-value of {p_value:.4f}')
