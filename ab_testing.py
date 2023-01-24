@@ -1,5 +1,3 @@
-# choose technique
-
 from scipy import stats
 
 # Check normality of A group
@@ -115,5 +113,16 @@ B_conversions = 550
 B_visitors = 1000
 significance_level = 0.05
 bayesian_ab_test(A_conversions, A_visitors, B_conversions, B_visitors, significance_level)
-    
-    
+
+"""
+other distributions can be used in the likelihood function depending on the type of data you have. 
+The binomial distribution, which is used in the example is commonly used for binary data, 
+such as the number of conversions in an A/B test. However, if you have continuous data, you might use
+a normal distribution or a student t-distribution in the likelihood function.
+"""
+with pm.Model() as model:
+    A_time = pm.Normal('A_time', mu=10, sd=1)
+    B_time = pm.Normal('B_time', mu=10, sd=1)
+    A_like = pm.Normal('A_like', mu=A_time, sd=1, observed=A_data)
+    B_like = pm.Normal('B_like', mu=B_time, sd=1, observed=B_data)
+
