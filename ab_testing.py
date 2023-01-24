@@ -110,7 +110,13 @@ def bayesian_ab_test(A_conversions, A_visitors, B_conversions, B_visitors, signi
         else:
             print(f'B version is better with a probability of {1-prob:.2f}')
     # plot the results
-    pm.plot_posterior(trace, var_names=['A_cr', 'B_cr'], ref_val=0.0, color='#87ceeb', alpha=0.2)
+    plt.hist(trace['A_cr'], bins=30, density=True, label='A')
+    plt.hist(trace['B_cr'], bins=30, density=True, label='B', alpha=0.5)
+    plt.xlabel('Conversion Rate')
+    plt.ylabel('Density')
+    plt.legend()
+    plt.show()
+    #pm.plot_posterior(trace, var_names=['A_cr', 'B_cr'], ref_val=0.0, color='#87ceeb', alpha=0.2)
     
 A_conversions = 500
 A_visitors = 1000
