@@ -77,7 +77,7 @@ else:
 
 import pymc3 as pm
 
-def bayesian_ab_test(A_conversions, A_visitors, B_conversions, B_visitors, significance_level):
+def bayesian_ab_test(A_conversions, A_visitors, B_conversions, B_visitors, significance_level, one_tail=False):
     # Define the prior distributions for the conversion rates
     with pm.Model() as model:
         A_cr = pm.Beta('A_cr', alpha=1, beta=1)
@@ -99,11 +99,16 @@ def bayesian_ab_test(A_conversions, A_visitors, B_conversions, B_visitors, signi
     prob = (diff_of_means > 0).mean()
     
     # check if the probability is greater than the significance level
-    if prob > significance_level:
-        print(f'A version is better with a probability of {prob:.2f}')
+    if one_tail:
+        if prob > significance_level:
+            print(f'A version is better with a probability of {prob:.2f}')
+        else:
+            print(f'B version is better with a probability of {1-prob:.2f}')
     else:
-        print(f'B version is better with a probability of {1-prob:.2f}')
-    
+        if prob > significance_level/2:
+            print(f'A version is better with a probability of {prob:.2f}')
+        else:
+            print(f'B version is better with a probability of {1-prob:.2f}')
     # plot the results
     pm.plot_posterior(trace, var_names=['A_cr', 'B_cr'], ref_val=0.0, color='#87ceeb', alpha=0.2)
     
