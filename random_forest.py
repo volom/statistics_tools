@@ -70,3 +70,15 @@ plt.ylabel("True Positive Rate")
 plt.title("ROC Curve")
 plt.legend()
 plt.show()
+
+
+# visualize tree
+from sklearn.tree import plot_tree
+
+# Pick one of the trees in the random forest classifier
+estimator = clf.estimators_[0]
+
+# Plot the tree
+fig, ax = plt.subplots(figsize=(20, 10))
+plot_tree(estimator, ax=ax, feature_names=X_train.columns, class_names=y.unique(), filled=True, precision=3)
+plt.show()
