@@ -24,6 +24,13 @@ x = sm.add_constant(x)
 model = sm.OLS(y, x).fit()
 model.summary()
 
+# get p-values from the model
+p_values = model.summary2().tables[1]['P>|t|']
+
+print(p_values)
+
+
+
 white_test = het_white(model.resid, model.model.exog)
 
 labels = ["Test Statistic", "Test Statistic p-value", "F-Statistic", "F-Test p-value"]
