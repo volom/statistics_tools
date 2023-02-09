@@ -81,4 +81,5 @@ estimator = clf.estimators_[0]
 # Plot the tree
 fig, ax = plt.subplots(figsize=(20, 10))
 plot_tree(estimator, ax=ax, feature_names=X_train.columns, class_names=y.unique(), filled=True, precision=3)
+fig.savefig('tree.png', dpi=600)
 plt.show()
