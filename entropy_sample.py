@@ -20,3 +20,9 @@ def entropy(labels):
 
 ent = entropy(labels)
 print(ent)
+
+"""
+This means that the entropy of the label distribution is approximately 0.971. 
+The higher the entropy, the more uncertain the classification is. In this case, 
+the label distribution is skewed towards class A, so the entropy is not very high.
+"""
