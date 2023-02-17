@@ -2,7 +2,8 @@ import xgboost as xgb
 import numpy as np
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
-
+from sklearn.metrics import accuracy_score, roc_auc_score
+import matplotlib.pyplot as plt
 # Generate some example data
 X, y = make_classification(n_samples=1000, n_features=10, n_informative=5, n_redundant=0, random_state=42)
 
@@ -29,7 +30,6 @@ model = xgb.train(params, dtrain, num_rounds)
 y_pred = model.predict(dtest)
 
 # Evaluate the model
-from sklearn.metrics import accuracy_score, roc_auc_score
 print("Accuracy:", accuracy_score(y_test, np.round(y_pred)))
 print("ROC AUC score:", roc_auc_score(y_test, y_pred))
 
@@ -39,3 +39,17 @@ importances = sorted(importances.items(), key=lambda x: x[1], reverse=True)
 print("Feature importance:")
 for i in importances:
     print(i)
+
+# visualize
+# Calculate ROC curve and AUC-ROC
+fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+auc_roc = roc_auc_score(y_test, y_pred)
+
+# Visualize the ROC curve
+plt.plot(fpr, tpr, label=f"AUC-ROC = {auc_roc:.3f}")
+plt.plot([0, 1], [0, 1], linestyle="--")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve")
+plt.legend()
+plt.show()
